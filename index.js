@@ -127,9 +127,230 @@ function addInKeys(langKeyBoard) {
         count = 0;
     }
 }
+// Reaplace language
+function getOtherLanguage(event) {
+    if (count === 0) {
+        if (event.altKey && event.ctrlKey) {
+            count = 1;
+            let checkFlag = document.getElementById("check__register");
+            if (language === "eng") {
+                language = "rus";
+                !checkFlag.checked ?
+                    addInKeys(rusKeyBoard) :
+                    upperCaseAfterCapsLock(rusKeyBoard);
+            } else {
+                language = "eng";
+                !checkFlag.checked ?
+                    addInKeys(engKeyBoard) :
+                    upperCaseAfterCapsLock(engKeyBoard);
+            }
+            localStorage.clear()
+            localStorage.setItem("lang", language);
+        }
+    }
+
+
+}
+// Zeroing count for Reaplace language
+function getSecurOtherLanguage(event) {
+    if (!event.altKey || !event.ctrlKey) {
+        count = 0;
+    }
+}
+// Position key SHIFT
+function positionShift(event) {
+    let checkbox = document.getElementById("check__register")
+    if (event.key === "Shift" && !checkbox.checked) {
+        if (lock === 1) {
+            language === "eng" ?
+                addInKeys(engKeyBoardShift) :
+                addInKeys(rusKeyBoardShift);
+        } else if (lock === 0) {
+            language === "eng" ?
+                addInKeys(engKeyBoard) :
+                addInKeys(rusKeyBoard);
+        }
+    } else if (event.key === "Shift" && checkbox.checked) {
+        if (lock === 1) {
+            if (language === "eng") {
+                console.log(11111)
+                addInKeys(engKeyBoardShift)
+                lowerCaseAfterCapsLock(engKeyBoardShift)
+            } else {
+                addInKeys(rusKeyBoardShift)
+                lowerCaseAfterCapsLock(rusKeyBoardShift)
+            }
+        } else if (lock === 0) {
+            language === "eng" ?
+            upperCaseAfterCapsLock(engKeyBoard) :
+            upperCaseAfterCapsLock(rusKeyBoard);
+
+        }
+    }
+}
+// Position key CAPS__LOCK
+
+function upperCaseAfterCapsLock(langKeyBoard) {
+    for (let key in langKeyBoard) {
+        let count = 0;
+        let arrKeys = document.querySelector(`.${key}`).querySelectorAll(".key");
+        arrKeys.forEach(el => {
+            let inside = `${langKeyBoard[`${key}`][count]}`
+            if (inside.split("").length === 1) {
+                el.innerText = inside.toUpperCase();
+            }
+            count++;
+        })
+    }
+}
+
+function lowerCaseAfterCapsLock(langKeyBoard) {
+    for (let key in langKeyBoard) {
+        let count = 0;
+        let arrKeys = document.querySelector(`.${key}`).querySelectorAll(".key");
+        arrKeys.forEach(el => {
+            let inside = `${langKeyBoard[`${key}`][count]}`
+            if (inside.split("").length === 1) {
+                el.innerText = inside.toLowerCase();
+            }
+            count++;
+        })
+    }
+}
+
+document.addEventListener("keydown", getOtherLanguage);
+document.addEventListener("keyup", getSecurOtherLanguage);
+
+// document.addEventListener("keydown", getOtherLanguage);
+document.addEventListener("keyup", function (event) {
+    let textArea = document.querySelector(".text__area");
+    textArea.focus = true;
+});
+
+document.addEventListener("keydown", function (event) {
+    for (let key in nameKeys) {
+        nameKeys[`${key}`].forEach(el => {
+            if (el === event.code) {
+                let searchKey = document.querySelector(`[data-name=${String(el)}]`);
+                searchKey.classList.add("active");
+                let textArea = document.getElementById("text__output");
+                searchKey.classList.forEach(e => {
+                    if (e === "word__write") {
+                        textArea.value = textArea.value + `${searchKey.innerText}`
+                    } else if (e === "space") {
+                        textArea.value = textArea.value + ` `
+                    } else if (e === "tab") {
+                        textArea.value = textArea.value + `    `
+                    }
+                })
+
+            }
+        })
+    }
+})
+document.addEventListener("keyup", function (event) {
+    for (let key in nameKeys) {
+        nameKeys[`${key}`].forEach(el => {
+            let searchKey = document.querySelector(`[data-name=${String(el)}]`);
+            if (event.code === "CapsLock" && event.code === el) {
+                let checkFlag = document.getElementById("check__register");
+                if (!checkFlag.checked) {
+                    checkFlag.checked = true;
+                    searchKey.classList.add("active");
+                    language === "eng" ?
+                        upperCaseAfterCapsLock(engKeyBoard) :
+                        upperCaseAfterCapsLock(rusKeyBoard);
+                } else {
+                    checkFlag.checked = false;
+                    searchKey.classList.remove("active");
+                    language === "eng" ?
+                        addInKeys(engKeyBoard) :
+                        addInKeys(rusKeyBoard);
+                }
+            } else
+            if (el === event.code) {
+                searchKey.classList.remove("active")
+            }
+        })
+    }
+})
+
+document.addEventListener("keydown", function (event) {
+    lock = 1;
+    positionShift(event)
+})
+document.addEventListener("keyup", function (event) {
+    lock = 0;
+    positionShift(event)
+})
 
 startKeyboard(nameKeys);
 language === "eng" ?
     addInKeys(engKeyBoard) :
     addInKeys(rusKeyBoard);
 let keys = document.querySelectorAll(".key");
+
+keys.forEach(e => {
+    e.addEventListener("mousedown", function (event) {
+        // textArea.focus()
+        let textArea = document.getElementById("text__output");
+
+        for (let key in nameKeys) {
+            nameKeys[`${key}`].forEach(el => {
+                if (el === e.dataset.name) {
+                    let searchKey = document.querySelector(`[data-name=${String(el)}]`);
+                    searchKey.classList.add("active");
+                    searchKey.classList.forEach(e => {
+                        if (e === "word__write") {
+                            textArea.value = textArea.value + `${searchKey.innerText}`
+                        } else if (e === "space") {
+                            textArea.value = textArea.value + ` `
+                        } else if (e === "tab") {
+                            textArea.value = textArea.value + `    `
+                        }
+                    })
+                }
+            })
+        }
+
+    })
+})
+
+keys.forEach(e => {
+    e.addEventListener("click", function (event) {
+        for (let key in nameKeys) {
+            nameKeys[`${key}`].forEach(el => {
+                let searchKey = document.querySelector(`[data-name=${String(el)}]`);
+                if (e.dataset.name === "CapsLock" && e.dataset.name === el) {
+                    let checkFlag = document.getElementById("check__register");
+                    if (!checkFlag.checked) {
+                        checkFlag.checked = true;
+                        searchKey.classList.add("active");
+                        language === "eng" ?
+                            upperCaseAfterCapsLock(engKeyBoard) :
+                            upperCaseAfterCapsLock(rusKeyBoard);
+                    } else {
+                        checkFlag.checked = false;
+                        searchKey.classList.remove("active");
+                        language === "eng" ?
+                            addInKeys(engKeyBoard) :
+                            addInKeys(rusKeyBoard);
+                    }
+                } else
+                if (el === e.dataset.name) {
+                    searchKey.classList.remove("active")
+                }
+            })
+        }
+    })
+})
+
+
+document.addEventListener("keypress", function (event) {
+    let key = document.querySelector(`[data-name=${String(event.code)}]`);
+    key.classList.forEach(el => {
+        if (el === "word__write" || el === "space" || el === "tab") {
+            event.preventDefault();
+        }
+    })
+})
