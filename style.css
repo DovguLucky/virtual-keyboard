@@ -1,0 +1,160 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: 100vh;
+    margin: 0 auto;
+    background-size: cover;
+    position: relative;
+    background-color: #494949;
+}
+
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.textboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 200px;
+    margin: 10px auto;
+}
+
+.textboard p {
+    font-style: italic;
+    font-size: 2em;
+    line-height: 0px;
+    color: rgba(255, 68, 0, 1);
+
+}
+
+.check__box {
+    opacity: 0;
+}
+
+.keyboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    background: url(./Нова/racing-ge3a7c1857_1280.jpg) center no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    padding: 15px;
+    overflow: hidden;
+    box-shadow: 0px 0px 20px 10px #000;
+    border: 2px solid black;
+    height: 270px;
+    width: 874px;
+    margin: 0px auto;
+    position: relative;
+}
+
+.keyboard::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-color: #000;
+    backdrop-filter: sepia(100%);
+    overflow: hidden;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    z-index: 1;
+    width: 100%;
+}
+
+.key {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    color: rgba(255, 68, 0, 1);
+    border: 2px solid red;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: azure;
+    font-size: 18px;
+    transition: 0.7s;
+
+}
+
+.active {
+    background-color: rgba(255, 68, 0, 1);
+    transition: 0.3s;
+    border-radius: 100px;
+    border: 2px solid #000;
+    color: #000;
+
+}
+
+.word__key {}
+
+
+.tab {}
+
+.shiftright,
+.shiftleft {
+    width: 101px;
+}
+
+.capslock {
+    width: 105px;
+}
+
+.controlleft {
+    width: 86px;
+
+}
+
+.controlright {
+    /* width: 60px; */
+}
+
+.alt {}
+
+.space {
+    width: 345px;
+}
+
+.win {}
+
+.backspace {
+    width: 101px;
+}
+
+.del {}
+
+.enter {
+    width: 97px;
+}
+
+.note {
+    margin: 0px;
+    font-style: italic;
+    font-size: 1.5em;
+    color: rgba(255, 68, 0, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
