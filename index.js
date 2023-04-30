@@ -1,11 +1,20 @@
+// капслок при шифте ТОЛЬКО ПРИ МЫШКЕ
+// При нажатии других клаиш функцианаль  сещается курсор
+// правый альт
+// the Shift, Alt, Ctrl, Caps lock and Space keys should work as on a real keyboard
+
+// Eslint
+// shift
+// ES6
+// git
+
 let nameKeys = {
     "firstLine": ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'],
     "secondLine": ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'],
     "thirdLine": ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter'],
     "fourthLine": ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'],
     "fiveLine": ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight']
-}
-
+};
 
 let engKeyBoard = {
     firstLine: ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"],
@@ -44,7 +53,7 @@ if (localStorage.getItem("lang")) {
     let lang = localStorage.getItem("lang");
     language = lang;
 }
-localStorage.clear()
+// localStorage.clear()
 
 
 let body = document.querySelector('body');
@@ -77,8 +86,9 @@ wrapper.append(keyBoard);
 
 let note = document.createElement('div');
 note.classList.add("note");
-note.innerHTML = '<p>Клавиатура создана в операционной системе Windows <br> Для переключения языка комбинация: левыe ctrl + alt </p>';
+note.innerHTML = '<p>Клавиатура создана в операционной системе Windows <br> Для переключения языка комбинация:  ctrl + alt </p>';
 wrapper.append(note);
+
 
 // Add new keys in line
 function getAddKeys(nameKey, thisLine) {
@@ -170,7 +180,6 @@ function positionShift(event) {
     } else if (event.key === "Shift" && checkbox.checked) {
         if (lock === 1) {
             if (language === "eng") {
-                console.log(11111)
                 addInKeys(engKeyBoardShift)
                 lowerCaseAfterCapsLock(engKeyBoardShift)
             } else {
@@ -185,6 +194,7 @@ function positionShift(event) {
     }
 }
 
+//MOUSE: Position key SHIFT 
 function positionShiftClick() {
     let checkbox = document.getElementById("check__register")
     if (!checkbox.checked) {
@@ -253,12 +263,6 @@ document.addEventListener("keydown", function (event) {
 document.addEventListener("keydown", getOtherLanguage);
 document.addEventListener("keyup", getSecurOtherLanguage);
 
-// !!!!!!!!!!!!!!!!!
-document.addEventListener("keyup", function () {
-    let textArea = document.querySelector(".text__area");
-    textArea.focus = true;
-});
-
 // Press on KEYBOARD
 document.addEventListener("keydown", function (event) {
     let textArea = document.getElementById("text__output");
@@ -281,7 +285,9 @@ document.addEventListener("keydown", function (event) {
                     } else if (e === "tab") {
                         inside = `    `;
                         tabStep = 3;
-                    } else if (e === "shiftleft" || e === "shiftright") {
+                    } else if (e === "shiftleft" || e === "shiftright" ) {
+                        inside = ``;
+                        tabStep = -1;
                         positionShiftClick()
                     } else if (e === "enter") {
                         inside = `\r\n`
@@ -297,6 +303,9 @@ document.addEventListener("keydown", function (event) {
                         inside = ``;
                     } else if (e === "arrowleft" || e === "arrowright" || e === "arrowdown" || e === "arrowup") {
                         inside = `${searchKey.innerText}`;
+                    } else if (e === "controlleft" || e === "controlright" || e === "altleft" || e === "altright" || e === "metaleft" || e === "capslock") {
+                        inside = ``;
+                        tabStep = -1;
                     }
                 })
             }
@@ -329,11 +338,16 @@ document.addEventListener("keyup", function (event) {
                         addInKeys(rusKeyBoard);
                 }
             } else
-            if (el === event.code) {
+            if (event.code === el) {
                 searchKey.classList.remove("active")
             }
         })
     }
+    // keys.forEach(el => {
+    //     el.addEventListener("click", ()=>{
+    //         textArea.focus();
+    //     })
+    // })
 })
 
 // Add functional SHIFT-key
@@ -377,7 +391,9 @@ keys.forEach(e => {
                         } else if (e === "tab") {
                             inside = `    `;
                             tabStep = 3;
-                        } else if (e === "shiftleft" || e === "shiftright") {
+                        } else if (e === "shiftleft" || e === "shiftright" ) {
+                            inside = ``;
+                            tabStep = -1;
                             positionShiftClick()
                         } else if (e === "enter") {
                             inside = `\r\n`
@@ -393,6 +409,9 @@ keys.forEach(e => {
                             inside = ``;
                         } else if (e === "arrowleft" || e === "arrowright" || e === "arrowdown" || e === "arrowup") {
                             inside = `${searchKey.innerText}`;
+                        } else if (e === "controlleft" || e === "controlright" || e === "altleft" || e === "altright" || e === "metaleft" || e === "capslock") {
+                            inside = ``;
+                            tabStep = -1;
                         }
                     })
                 }
@@ -402,15 +421,21 @@ keys.forEach(e => {
         textArea.selectionStart = textArea.selectionEnd + 1 + tabStep;
         textArea.selectionEnd = textArea.selectionStart;
         tabStep = 0;
-        })
+    })
 })
 
 // MOUSE: Remove class ACTIVE  on all keys
 keys.forEach(e => {
     document.addEventListener("mouseup", () => {
         e.classList.forEach(function (el) {
+
             if (el === "active" && el !== "capslock") {
                 e.classList.remove("active")
+                e.classList.forEach(m => {
+                    if (m === "capslock") {
+                        e.classList.add("active")
+                    }
+                })
                 e.classList.forEach(l => {
                     if (l === "shiftleft" || l === "shiftright") {
                         lock = 0;
@@ -421,6 +446,7 @@ keys.forEach(e => {
         })
     })
 })
+
 // MOUSE: position SHIFT click 
 keys.forEach(e => {
     e.addEventListener("mouseup", function () {
@@ -468,6 +494,16 @@ keys.forEach(e => {
                 }
             })
         }
+    })
+})
+
+// Add focus for TEXTAREA
+document.addEventListener("keyup", function () {
+    textArea.focus();
+});
+keys.forEach(el => {
+    el.addEventListener("click", () => {
+        textArea.focus();
     })
 })
 
