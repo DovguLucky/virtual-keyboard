@@ -1,5 +1,3 @@
-
-
 let nameKeys = {
     "firstLine": ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'],
     "secondLine": ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'],
@@ -39,6 +37,7 @@ let rusKeyBoardShift = {
     fiveLine: ["ctrl", "Win", "alt", "Space", "alt", "&#9668;", "&#9660;", "&#9658;", "ctrl"]
 };
 
+let lock = 0;
 let language = "eng";
 let count = 0;
 if (localStorage.getItem("lang")) {
@@ -58,7 +57,7 @@ textBoard.classList.add("textboard");
 textBoard.innerHTML = '<p>Тут будет приветствие!!</p>';
 let textArea = document.createElement("textarea");
 textArea.rows = "5";
-textArea.cols = "100";
+textArea.cols = "60";
 textArea.autofocus = true;
 textArea.id = "text__output";
 textArea.classList.add("text__area");
@@ -148,8 +147,6 @@ function getOtherLanguage(event) {
             localStorage.setItem("lang", language);
         }
     }
-
-
 }
 // Zeroing count for Reaplace language
 function getSecurOtherLanguage(event) {
@@ -182,12 +179,41 @@ function positionShift(event) {
             }
         } else if (lock === 0) {
             language === "eng" ?
-            upperCaseAfterCapsLock(engKeyBoard) :
-            upperCaseAfterCapsLock(rusKeyBoard);
-
+                upperCaseAfterCapsLock(engKeyBoard) :
+                upperCaseAfterCapsLock(rusKeyBoard);
         }
     }
 }
+
+function positionShiftClick() {
+    let checkbox = document.getElementById("check__register")
+    if (!checkbox.checked) {
+        if (lock === 1) {
+            language === "eng" ?
+                addInKeys(engKeyBoardShift) :
+                addInKeys(rusKeyBoardShift);
+        } else if (lock === 0) {
+            language === "eng" ?
+                addInKeys(engKeyBoard) :
+                addInKeys(rusKeyBoard);
+        }
+    } else if (checkbox.checked) {
+        if (lock === 1) {
+            if (language === "eng") {
+                addInKeys(engKeyBoardShift)
+                lowerCaseAfterCapsLock(engKeyBoardShift)
+            } else {
+                addInKeys(rusKeyBoardShift)
+                lowerCaseAfterCapsLock(rusKeyBoardShift)
+            }
+        } else if (lock === 0) {
+            language === "eng" ?
+                upperCaseAfterCapsLock(engKeyBoard) :
+                upperCaseAfterCapsLock(rusKeyBoard);
+        }
+    }
+}
+
 // Position key CAPS__LOCK
 
 function upperCaseAfterCapsLock(langKeyBoard) {
@@ -218,16 +244,29 @@ function lowerCaseAfterCapsLock(langKeyBoard) {
     }
 }
 
+// Remove click REAL keyboard
+document.addEventListener("keydown", function (event) {
+    event.preventDefault();
+})
+
+// Replace language and security reapeet
 document.addEventListener("keydown", getOtherLanguage);
 document.addEventListener("keyup", getSecurOtherLanguage);
 
-// document.addEventListener("keydown", getOtherLanguage);
-document.addEventListener("keyup", function (event) {
+// !!!!!!!!!!!!!!!!!
+document.addEventListener("keyup", function () {
     let textArea = document.querySelector(".text__area");
     textArea.focus = true;
 });
 
+// Press on KEYBOARD
 document.addEventListener("keydown", function (event) {
+    let textArea = document.getElementById("text__output");
+    let inside = '';
+    let start = textArea.selectionEnd;
+    let end = textArea.selectionEnd;
+    lock = 1;
+    let tabStep = 0;
     for (let key in nameKeys) {
         nameKeys[`${key}`].forEach(el => {
             if (el === event.code) {
@@ -236,18 +275,40 @@ document.addEventListener("keydown", function (event) {
                 let textArea = document.getElementById("text__output");
                 searchKey.classList.forEach(e => {
                     if (e === "word__write") {
-                        textArea.value = textArea.value + `${searchKey.innerText}`
+                        inside = `${searchKey.innerText}`;
                     } else if (e === "space") {
-                        textArea.value = textArea.value + ` `
+                        inside = ` `;
                     } else if (e === "tab") {
-                        textArea.value = textArea.value + `    `
+                        inside = `    `;
+                        tabStep = 3;
+                    } else if (e === "shiftleft" || e === "shiftright") {
+                        positionShiftClick()
+                    } else if (e === "enter") {
+                        inside = `\r\n`
+                    } else if (e === "delete") {
+                        start = textArea.selectionEnd;
+                        end = textArea.selectionEnd + 1;
+                        inside = ``;
+                        tabStep = -1;
+                    } else if (e === "backspace") {
+                        start = textArea.selectionEnd - 1;
+                        end = textArea.selectionEnd;
+                        tabStep = -1;
+                        inside = ``;
+                    } else if (e === "arrowleft" || e === "arrowright" || e === "arrowdown" || e === "arrowup") {
+                        inside = `${searchKey.innerText}`;
                     }
                 })
-
             }
         })
     }
+    textArea.setRangeText(`${inside}`, start, end);
+    textArea.selectionStart = textArea.selectionEnd + 1 + tabStep;
+    textArea.selectionEnd = textArea.selectionStart;
+    tabStep = 0;
 })
+
+// Add class ACTIVE to key
 document.addEventListener("keyup", function (event) {
     for (let key in nameKeys) {
         nameKeys[`${key}`].forEach(el => {
@@ -275,6 +336,7 @@ document.addEventListener("keyup", function (event) {
     }
 })
 
+// Add functional SHIFT-key
 document.addEventListener("keydown", function (event) {
     lock = 1;
     positionShift(event)
@@ -284,17 +346,24 @@ document.addEventListener("keyup", function (event) {
     positionShift(event)
 })
 
+// Start KEYBOARD
 startKeyboard(nameKeys);
 language === "eng" ?
     addInKeys(engKeyBoard) :
     addInKeys(rusKeyBoard);
+
 let keys = document.querySelectorAll(".key");
 
-keys.forEach(e => {
-    e.addEventListener("mousedown", function (event) {
-        // textArea.focus()
-        let textArea = document.getElementById("text__output");
 
+//MOUSE:  Add functional MOUSE__CLICK
+keys.forEach(e => {
+    e.addEventListener("mousedown", function () {
+        let textArea = document.getElementById("text__output");
+        let inside = '';
+        let start = textArea.selectionEnd;
+        let end = textArea.selectionEnd;
+        lock = 1;
+        let tabStep = 0;
         for (let key in nameKeys) {
             nameKeys[`${key}`].forEach(el => {
                 if (el === e.dataset.name) {
@@ -302,22 +371,79 @@ keys.forEach(e => {
                     searchKey.classList.add("active");
                     searchKey.classList.forEach(e => {
                         if (e === "word__write") {
-                            textArea.value = textArea.value + `${searchKey.innerText}`
+                            inside = `${searchKey.innerText}`;
                         } else if (e === "space") {
-                            textArea.value = textArea.value + ` `
+                            inside = ` `;
                         } else if (e === "tab") {
-                            textArea.value = textArea.value + `    `
+                            inside = `    `;
+                            tabStep = 3;
+                        } else if (e === "shiftleft" || e === "shiftright") {
+                            positionShiftClick()
+                        } else if (e === "enter") {
+                            inside = `\r\n`
+                        } else if (e === "delete") {
+                            start = textArea.selectionEnd;
+                            end = textArea.selectionEnd + 1;
+                            inside = ``;
+                            tabStep = -1;
+                        } else if (e === "backspace") {
+                            start = textArea.selectionEnd - 1;
+                            end = textArea.selectionEnd;
+                            tabStep = -1;
+                            inside = ``;
+                        } else if (e === "arrowleft" || e === "arrowright" || e === "arrowdown" || e === "arrowup") {
+                            inside = `${searchKey.innerText}`;
                         }
                     })
                 }
             })
         }
+        textArea.setRangeText(`${inside}`, start, end);
+        textArea.selectionStart = textArea.selectionEnd + 1 + tabStep;
+        textArea.selectionEnd = textArea.selectionStart;
+        tabStep = 0;
+        })
+})
 
+// MOUSE: Remove class ACTIVE  on all keys
+keys.forEach(e => {
+    document.addEventListener("mouseup", () => {
+        e.classList.forEach(function (el) {
+            if (el === "active" && el !== "capslock") {
+                e.classList.remove("active")
+                e.classList.forEach(l => {
+                    if (l === "shiftleft" || l === "shiftright") {
+                        lock = 0;
+                        positionShiftClick();
+                    }
+                })
+            }
+        })
+    })
+})
+// MOUSE: position SHIFT click 
+keys.forEach(e => {
+    e.addEventListener("mouseup", function () {
+        lock = 0;
+        for (let key in nameKeys) {
+            nameKeys[`${key}`].forEach(el => {
+                if (el === e.dataset.name) {
+                    let searchKey = document.querySelector(`[data-name=${String(el)}]`);
+                    searchKey.classList.add("active");
+                    searchKey.classList.forEach(e => {
+                        if (e === "shiftleft" || e === "shiftright") {
+                            positionShiftClick()
+                        }
+                    })
+                }
+            })
+        }
     })
 })
 
+// MOUSE:  CAPS__LOCK click 
 keys.forEach(e => {
-    e.addEventListener("click", function (event) {
+    e.addEventListener("click", function () {
         for (let key in nameKeys) {
             nameKeys[`${key}`].forEach(el => {
                 let searchKey = document.querySelector(`[data-name=${String(el)}]`);
@@ -345,12 +471,4 @@ keys.forEach(e => {
     })
 })
 
-
-document.addEventListener("keypress", function (event) {
-    let key = document.querySelector(`[data-name=${String(event.code)}]`);
-    key.classList.forEach(el => {
-        if (el === "word__write" || el === "space" || el === "tab") {
-            event.preventDefault();
-        }
-    })
-})
+// npx eslint ./ --ext .js,.jsx
