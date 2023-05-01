@@ -1,13 +1,3 @@
-// капслок при шифте ТОЛЬКО ПРИ МЫШКЕ
-// При нажатии других клаиш функцианаль  сещается курсор
-// правый альт
-// the Shift, Alt, Ctrl, Caps lock and Space keys should work as on a real keyboard
-
-// Eslint
-// shift
-// ES6
-// git
-
 const nameKeys = {
   firstLine: ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'],
   secondLine: ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'],
@@ -53,7 +43,6 @@ if (localStorage.getItem('lang')) {
   const lang = localStorage.getItem('lang');
   language = lang;
 }
-// localStorage.clear()
 
 const body = document.querySelector('body');
 const wrapper = document.createElement('div');
@@ -85,7 +74,7 @@ wrapper.append(keyBoard);
 
 const note = document.createElement('div');
 note.classList.add('note');
-note.innerHTML = '<p>Клавиатура создана в операционной системе Windows <br> Для переключения языка комбинация:  ctrl + alt </p>';
+note.innerHTML = '<p>Клавиатура создана в операционной системе Windows <br> Для переключения языка комбинация: левые ctrl + alt </p>';
 wrapper.append(note);
 
 // Add new keys in line
